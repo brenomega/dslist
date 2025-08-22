@@ -1,4 +1,4 @@
-package io.github.breno.dslist.entities;
+package io.github.breno.dslist.model;
 
 import java.util.Objects;
 
