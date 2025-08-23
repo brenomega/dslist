@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.breno.dslist.dto.GameDTO;
+import io.github.breno.dslist.payload.ApiResponse;
 import io.github.breno.dslist.service.GameService;
 
 @RestController
@@ -21,8 +22,9 @@ public class GameController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<GameDTO>> findAll() {
+	public ResponseEntity<ApiResponse<List<GameDTO>>> findAll() {
 		List<GameDTO> games = gameService.findAll();
-		return ResponseEntity.ok(games);
+		ApiResponse<List<GameDTO>> response = new ApiResponse<>(games.size(), games);
+		return ResponseEntity.ok(response);
 	}
 }
