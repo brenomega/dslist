@@ -10,6 +10,7 @@ import io.github.breno.dslist.dto.GameDTO;
 import io.github.breno.dslist.dto.GameMinDTO;
 import io.github.breno.dslist.exception.GameNotFoundException;
 import io.github.breno.dslist.model.Game;
+import io.github.breno.dslist.projection.GameMinProjection;
 import io.github.breno.dslist.repository.GameRepository;
 
 @Service
@@ -26,6 +27,14 @@ public class GameService {
 		return gameRepository.findById(id)
 				.map(GameDTO::new)
 				.orElseThrow(() -> new GameNotFoundException(id));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<GameMinDTO> findByList(Long gameListId) {
+		List<GameMinProjection> result = gameRepository.findByList(gameListId);
+		return result.stream()
+				.map(GameMinDTO::new)
+				.collect(Collectors.toList());
 	}
 	
 	@Transactional(readOnly = true)

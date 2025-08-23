@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.breno.dslist.dto.GameDTO;
 import io.github.breno.dslist.dto.GameMinDTO;
-import io.github.breno.dslist.payload.ApiResponse;
+import io.github.breno.dslist.response.ApiResponse;
 import io.github.breno.dslist.service.GameService;
 
 @RestController
@@ -24,14 +24,14 @@ public class GameController {
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ApiResponse<GameDTO>> findById(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<GameDTO>> getGame(@PathVariable Long id) {
 		GameDTO game = gameService.findById(id);
 		ApiResponse<GameDTO> response = new ApiResponse<>(1, game);
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<GameMinDTO>>> findAll() {
+	public ResponseEntity<ApiResponse<List<GameMinDTO>>> getAllGames() {
 		List<GameMinDTO> games = gameService.findAll();
 		ApiResponse<List<GameMinDTO>> response = new ApiResponse<>(games.size(), games);
 		return ResponseEntity.ok(response);
