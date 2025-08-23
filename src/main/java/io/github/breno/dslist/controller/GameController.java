@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.breno.dslist.dto.GameDTO;
+import io.github.breno.dslist.dto.GameMinDTO;
 import io.github.breno.dslist.payload.ApiResponse;
 import io.github.breno.dslist.service.GameService;
 
@@ -20,11 +22,18 @@ public class GameController {
 	public GameController(GameService gameService) {
 		this.gameService = gameService;
 	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<ApiResponse<GameDTO>> findById(@PathVariable Long id) {
+		GameDTO game = gameService.findById(id);
+		ApiResponse<GameDTO> response = new ApiResponse<>(1, game);
+		return ResponseEntity.ok(response);
+	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<GameDTO>>> findAll() {
-		List<GameDTO> games = gameService.findAll();
-		ApiResponse<List<GameDTO>> response = new ApiResponse<>(games.size(), games);
+	public ResponseEntity<ApiResponse<List<GameMinDTO>>> findAll() {
+		List<GameMinDTO> games = gameService.findAll();
+		ApiResponse<List<GameMinDTO>> response = new ApiResponse<>(games.size(), games);
 		return ResponseEntity.ok(response);
 	}
 }

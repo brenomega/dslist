@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.breno.dslist.dto.GameDTO;
+import io.github.breno.dslist.dto.GameMinDTO;
+import io.github.breno.dslist.exception.GameNotFoundException;
 import io.github.breno.dslist.model.Game;
 import io.github.breno.dslist.repository.GameRepository;
 
@@ -18,10 +21,18 @@ public class GameService {
 		this.gameRepository = gameRepository;
 	}
 
-	public List<GameDTO> findAll() {
+	@Transactional(readOnly = true)
+	public GameDTO findById(Long id) {
+		return gameRepository.findById(id)
+				.map(GameDTO::new)
+				.orElseThrow(() -> new GameNotFoundException(id));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<GameMinDTO> findAll() {
 		List<Game> result = gameRepository.findAll();
 		return result.stream()
-                .map(GameDTO::new)
+                .map(GameMinDTO::new)
                 .collect(Collectors.toList());
 	}
 }
