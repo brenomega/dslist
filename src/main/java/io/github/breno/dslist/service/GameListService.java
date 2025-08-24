@@ -39,4 +39,19 @@ public class GameListService {
                 .map(GameListDTO::new)
                 .collect(Collectors.toList());
 	}
+	
+	@Transactional
+	public void move(Long gameListId, int sourceIndex, int destinationIndex) {
+		List<GameMinDTO> list = gameService.findByList(gameListId);
+		
+		GameMinDTO obj = list.remove(sourceIndex);
+		list.add(destinationIndex, obj);
+		
+		int min = sourceIndex < destinationIndex ? sourceIndex : destinationIndex;
+		int max = sourceIndex > destinationIndex ? sourceIndex : destinationIndex;
+		
+		for (int i = min; i <= max; i++) {
+			gameListRepository.updateBelongingPosition(gameListId, list.get(i).id(), i);
+		}
+	}
 }
