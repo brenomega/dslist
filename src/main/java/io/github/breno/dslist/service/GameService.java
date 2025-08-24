@@ -37,6 +37,11 @@ public class GameService {
 				.collect(Collectors.toList());
 	}
 	
+	@Transactional
+	public List<Long> findIdsByListWithLock(Long gameListId) {
+		return gameRepository.findIdsByListWithLock(gameListId);
+	}
+	
 	@Transactional(readOnly = true)
 	public List<GameMinDTO> findAll() {
 		List<Game> result = gameRepository.findAll();

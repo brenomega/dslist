@@ -29,19 +29,20 @@ public class GameListController {
 	@GetMapping(value = "/{gameListId}/games")
 	public ResponseEntity<ApiResponse<List<GameMinDTO>>> getGamesInList(@PathVariable Long gameListId) {
 		List<GameMinDTO> result = gameListService.findGamesByListId(gameListId);
-		ApiResponse<List<GameMinDTO>> response = new ApiResponse<>(result.size(), result);
+		ApiResponse<List<GameMinDTO>> response = ApiResponse.ofList(result);
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<GameListDTO>>> getAllLists() {
 		List<GameListDTO> result = gameListService.findAll();
-		ApiResponse<List<GameListDTO>> response = new ApiResponse<>(result.size(), result);
+		ApiResponse<List<GameListDTO>> response = ApiResponse.ofList(result);
 		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping(value = "/{gameListId}/replacement")
-	public void moveGamesInList(@PathVariable Long gameListId, @RequestBody ReplacementDTO body) {
+	public ResponseEntity<ApiResponse<Void>> moveGamesInList(@PathVariable Long gameListId, @RequestBody ReplacementDTO body) {
 		gameListService.move(gameListId, body.sourceIndex(), body.destinationIndex());
+		return ResponseEntity.ok(ApiResponse.successMessage("Move completed."));
 	}
 }

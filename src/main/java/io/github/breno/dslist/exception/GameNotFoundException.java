@@ -4,6 +4,6 @@ public class GameNotFoundException extends GameException {
 	private static final long serialVersionUID = 1L;
 
 	public GameNotFoundException(Long id) {
-		super("Jogo não encontrado com ID: " + id);
+		super("Game not found with ID: " + id);
 	}
 }

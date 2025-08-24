@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.breno.dslist.dto.GameListDTO;
 import io.github.breno.dslist.dto.GameMinDTO;
 import io.github.breno.dslist.exception.GameListNotFoundException;
+import io.github.breno.dslist.exception.InvalidGameIndexException;
 import io.github.breno.dslist.model.GameList;
 import io.github.breno.dslist.repository.GameListRepository;
 
@@ -42,16 +43,28 @@ public class GameListService {
 	
 	@Transactional
 	public void move(Long gameListId, int sourceIndex, int destinationIndex) {
-		List<GameMinDTO> list = gameService.findByList(gameListId);
+		if (!gameListRepository.existsById(gameListId)) {
+			throw new GameListNotFoundException(gameListId);
+		}
 		
-		GameMinDTO obj = list.remove(sourceIndex);
-		list.add(destinationIndex, obj);
+		List<Long> gameIds = gameService.findIdsByListWithLock(gameListId);
 		
-		int min = sourceIndex < destinationIndex ? sourceIndex : destinationIndex;
-		int max = sourceIndex > destinationIndex ? sourceIndex : destinationIndex;
+		int size = gameIds.size();
+		if (sourceIndex < 0 || sourceIndex >= size) {
+			throw new InvalidGameIndexException("sourceIndex", sourceIndex, size);
+		}
+		if (destinationIndex < 0 || destinationIndex >= size) {
+			throw new InvalidGameIndexException("destinationIndex", destinationIndex, size);
+		}
+
+		Long gameId = gameIds.remove(sourceIndex);
+		gameIds.add(destinationIndex, gameId);
+		
+		int min = Math.min(sourceIndex, destinationIndex);
+		int max = Math.max(sourceIndex, destinationIndex);
 		
 		for (int i = min; i <= max; i++) {
-			gameListRepository.updateBelongingPosition(gameListId, list.get(i).id(), i);
+			gameListRepository.updateBelongingPosition(gameListId, gameIds.get(i), i);
 		}
 	}
 }

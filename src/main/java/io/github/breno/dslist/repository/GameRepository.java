@@ -20,4 +20,15 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 			ORDER BY tb.position
 			""")
 	List<GameMinProjection> findByList(Long gameListId);
+	
+	@Query(nativeQuery = true, value = """
+			SELECT tg.id
+			FROM tb_game tg
+			JOIN tb_belonging tb
+			ON tg.id = tb.game_id
+			WHERE tb.game_list_id = :gameListId
+			ORDER BY tb.position
+			FOR UPDATE
+			""")
+	List<Long> findIdsByListWithLock(Long gameListId);
 }

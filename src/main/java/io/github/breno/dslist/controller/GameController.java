@@ -25,15 +25,15 @@ public class GameController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ApiResponse<GameDTO>> getGame(@PathVariable Long id) {
-		GameDTO game = gameService.findById(id);
-		ApiResponse<GameDTO> response = new ApiResponse<>(1, game);
+		GameDTO result = gameService.findById(id);
+		ApiResponse<GameDTO> response = ApiResponse.ofSingle(result);
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<GameMinDTO>>> getAllGames() {
-		List<GameMinDTO> games = gameService.findAll();
-		ApiResponse<List<GameMinDTO>> response = new ApiResponse<>(games.size(), games);
+		List<GameMinDTO> result = gameService.findAll();
+		ApiResponse<List<GameMinDTO>> response = ApiResponse.ofList(result);
 		return ResponseEntity.ok(response);
 	}
 }
